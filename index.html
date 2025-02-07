@@ -35,20 +35,25 @@
 
     <script>
         function buscarNumero() {
-            var cpf = document.getElementById("cpf").value;
-            var apiUrl = "https://script.google.com/macros/s/AKfycbxFv0akC8Sz2Z794mFaNFCnOd9-aRQLTBqOW08fQQkUkptSLT9d_kUgkbYBfcHx82SP/exec?cpf=" + cpf;
+    var cpf = document.getElementById("cpf").value;
+    
+    // Remove pontos, traços e espaços extras
+    cpf = cpf.replace(/\D/g, "").trim();
+    
+    var apiUrl = "https://script.google.com/macros/s/AKfycbxFv0akC8Sz2Z794mFaNFCnOd9-aRQLTBqOW08fQQkUkptSLT9d_kUgkbYBfcHx82SP?cpf=" + cpf;
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.erro) {
-                        document.getElementById("resultado").innerText = "CPF não encontrado!";
-                    } else {
-                        document.getElementById("resultado").innerText = "Seu número sorteado é: " + data.numero;
-                    }
-                })
-                .catch(error => console.error("Erro ao buscar dados:", error));
-        }
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                document.getElementById("resultado").innerText = "CPF não encontrado!";
+            } else {
+                document.getElementById("resultado").innerText = "Seu número sorteado é: " + data.numero;
+            }
+        })
+        .catch(error => console.error("Erro ao buscar dados:", error));
+}
+
     </script>
 </body>
 </html>
