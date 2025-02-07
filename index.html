@@ -48,9 +48,9 @@
         }
 
         h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 300;
-            margin-bottom: 15px;
+            text-align: left;
         }
 
         input {
@@ -78,8 +78,9 @@
             border: none;
             background-color: #a91918;
             color: #fff;
-            font-weight: bold;
+            font-weight: 500;
             transition: 0.3s ease-in-out;
+            margin-top: -10px;
         }
 
         button:hover {
@@ -95,6 +96,7 @@
             border: 2px solid #fff;
             color: #fff;
             padding: 15px;
+            width: 100%;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             display: none;
         }
@@ -117,6 +119,28 @@
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
+
+        .container{
+            display: flex;
+            width: 500px;
+            max-width: 95%;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 10px;
+            border: 3px solid #101010;
+        }
+
+        .container img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 300;
+        }
     </style>
 </head>
 <body>
@@ -124,9 +148,11 @@
     <canvas id="fireworks-canvas"></canvas>
 
     <div class="container">
+        <img src="https://fastdrywall.com.br/wp-content/uploads/logo-fast-white.png.webp" >
         <h1>Consulta de Sorteio</h1>
+        <p>O número pode levar até <b>1 minuto</b> para ser registrado, caso não apareça, aguarde alguns segundos e tente novamente</p>
         <input type="text" id="cpf" placeholder="Digite seu CPF" />
-        <button onclick="buscarNumero()">Consultar</button>
+        <button onclick="buscarNumero()">Descrobrir meu número</button>
 
         <div id="loading">Buscando informações...</div>
         <div class="sorteio-container" id="sorteio-box">000</div>
@@ -177,7 +203,7 @@
                 if (data.erro) {
                     alert("⚠️ " + data.erro);
                 } else if (!data.numero || isNaN(parseInt(data.numero, 10))) {
-                    alert("Aguarde, estamos validando seus dados para gerar seu número, tente em alguns segundos!");
+                    alert("Aguarde, estamos validando seus dados para gerar seu número, tente em alguns");
                 } else {
                     let numeroFinal = parseInt(data.numero, 10);
                     iniciarSorteio(numeroFinal);
