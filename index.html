@@ -160,6 +160,31 @@
     </div>
 
     <script>
+
+        // 📌 Função para formatar CPF em tempo real
+function formatarCPF(input) {
+    let cpf = input.value.replace(/\D/g, ""); // Remove tudo que não for número
+
+    if (cpf.length > 11) cpf = cpf.slice(0, 11); // Limita a 11 caracteres
+
+    // Aplica a formatação automática: 000.000.000-00
+    if (cpf.length > 9) {
+        cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    } else if (cpf.length > 6) {
+        cpf = cpf.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
+    } else if (cpf.length > 3) {
+        cpf = cpf.replace(/(\d{3})(\d{0,3})/, "$1.$2");
+    }
+
+    input.value = cpf; // Atualiza o valor no campo
+}
+
+// 📌 Adiciona o evento de formatação ao campo CPF
+document.getElementById("cpf").addEventListener("input", function () {
+    formatarCPF(this);
+});
+
+
         particlesJS("fireworks-canvas", {
             particles: {
                 number: { value: 50 },
