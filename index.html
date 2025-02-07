@@ -177,7 +177,7 @@
                 if (data.erro) {
                     alert("⚠️ " + data.erro);
                 } else if (!data.numero || isNaN(parseInt(data.numero, 10))) {
-                    alert("⚠️ Nenhum número foi encontrado para este CPF. Aguarde o processamento.");
+                    alert("Aguarde, estamos validando seus dados para gerar seu número, tente em alguns segundos!");
                 } else {
                     let numeroFinal = parseInt(data.numero, 10);
                     iniciarSorteio(numeroFinal);
