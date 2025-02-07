@@ -9,7 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
 
     <style>
-        /* Reset */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +16,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Fundo com fogos de artifício */
         body {
             background: #fff;
             color: white;
@@ -30,7 +28,6 @@
             position: relative;
         }
 
-        /* Canvas para os fogos de artifício */
         #fireworks-canvas {
             position: absolute;
             top: 0;
@@ -40,7 +37,6 @@
             z-index: -1;
         }
 
-        /* Caixa principal */
         .container {
             background: #353535;
             padding: 30px;
@@ -69,7 +65,7 @@
             color: white;
         }
 
-        input::placeholder{
+        input::placeholder {
             color: #ffffff40;
             font-weight: 300;
         }
@@ -91,7 +87,6 @@
             transform: scale(1.02);
         }
 
-        /* Número sorteado */
         .sorteio-container {
             margin-top: 20px;
             font-size: 42px;
@@ -104,7 +99,6 @@
             display: none;
         }
 
-        /* Loader */
         #loading {
             font-size: 16px;
             color: #fff;
@@ -112,7 +106,6 @@
             display: none;
         }
 
-        /* Animação de confete */
         #lottie-animation {
             width: 120px;
             height: 120px;
@@ -120,7 +113,6 @@
             display: none;
         }
 
-        /* Animação de entrada */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
@@ -129,7 +121,6 @@
 </head>
 <body>
 
-    <!-- Canvas para fogos de artifício -->
     <canvas id="fireworks-canvas"></canvas>
 
     <div class="container">
@@ -143,7 +134,6 @@
     </div>
 
     <script>
-        // Inicializa a animação de fogos de artifício
         particlesJS("fireworks-canvas", {
             particles: {
                 number: { value: 50 },
@@ -154,29 +144,25 @@
             }
         });
 
-        // Inicia a animação Lottie
         var animation = lottie.loadAnimation({
             container: document.getElementById("lottie-animation"),
             renderer: "svg",
             loop: true,
             autoplay: false,
-            path: "https://assets10.lottiefiles.com/packages/lf20_u4yrau.json" // Animação de confetes
+            path: "https://assets10.lottiefiles.com/packages/lf20_u4yrau.json"
         });
 
         function buscarNumero() {
             var cpf = document.getElementById("cpf").value.trim();
-            
-            // Remove pontos, traços e espaços extras do CPF
             cpf = cpf.replace(/\D/g, "");
-            
+
             if (cpf.length !== 11) {
                 alert("Por favor, insira um CPF válido (11 dígitos).");
                 return;
             }
 
-            var apiUrl = "https://script.google.com/macros/s/AKfycbwrc4rrWUuNi0o1pK5PjVqhPNyUzIwfsLBkn1hVjMlIM_QDVckVWdbaEBfZqvL30YRU/exec?cpf=" + cpf;
+            var apiUrl = "https://script.google.com/macros/s/AKfycbzKo1dnlrnVWShkuUVj0nYu2-UUwuce_Xx0858HzFINwiMcseuX6tbjzMCAqA6SkbsQ/exec?cpf=" + cpf;
             
-            // Exibir carregamento
             document.getElementById("loading").style.display = "block";
             document.getElementById("sorteio-box").style.display = "none";
             document.getElementById("lottie-animation").style.display = "none";
@@ -184,14 +170,20 @@
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("loading").style.display = "none";
+                console.log("Resposta da API:", data);
 
-                    if (data.erro) {
-                        alert("⚠️ " + data.erro);
-                    } else {
-                        iniciarSorteio(data.numero);
-                    }
-                })
+                document.getElementById("loading").style.display = "none";
+
+                if (data.erro) {
+                    alert("⚠️ " + data.erro);
+                } else if (!data.numero || isNaN(parseInt(data.numero, 10))) {
+                    alert("⚠️ Nenhum número foi encontrado para este CPF. Aguarde o processamento.");
+                } else {
+                    let numeroFinal = parseInt(data.numero, 10);
+                    iniciarSorteio(numeroFinal);
+                }
+            })
+
                 .catch(error => {
                     console.error("Erro ao buscar dados:", error);
                     alert("❌ Erro ao consultar. Tente novamente.");
@@ -200,27 +192,25 @@
         }
 
         function iniciarSorteio(numeroFinal) {
-            document.getElementById("sorteio-box").style.display = "block";
-            
-            let sorteioBox = document.getElementById("sorteio-box");
-            let tempo = 2500; // Tempo da animação (2,5s)
-            let intervalo = 50; // Intervalo de troca de número
+    let sorteioBox = document.getElementById("sorteio-box");
+    sorteioBox.style.display = "block";
 
-            let numeros = setInterval(() => {
-                let randomNum = Math.floor(Math.random() * 1000);
-                sorteioBox.innerText = randomNum;
-            }, intervalo);
+    let tempo = 2500;
+    let intervalo = 50;
 
-            // Para a rolagem e exibe o número final
-            setTimeout(() => {
-                clearInterval(numeros);
-                sorteioBox.innerText = numeroFinal;
+    let numeros = setInterval(() => {
+        sorteioBox.innerText = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
+    }, intervalo);
 
-                // Exibe animação de confetes 🎉
-                animation.play();
-                document.getElementById("lottie-animation").style.display = "block";
-            }, tempo);
-        }
+    setTimeout(() => {
+        clearInterval(numeros);
+        sorteioBox.innerText = String(numeroFinal).padStart(3, "0");
+
+        animation.play();
+        document.getElementById("lottie-animation").style.display = "block";
+    }, tempo);
+}
+
     </script>
 
 </body>
