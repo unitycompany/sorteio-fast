@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Sorteio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consulta de Número Sorteado</h1>
+    <input type="text" id="cpf" placeholder="Digite seu CPF" />
+    <button onclick="buscarNumero()">Consultar</button>
+    <div id="resultado"></div>
+
+    <script>
+        function buscarNumero() {
+            var cpf = document.getElementById("cpf").value;
+            var apiUrl = "https://script.google.com/macros/s/AKfycbxFv0akC8Sz2Z794mFaNFCnOd9-aRQLTBqOW08fQQkUkptSLT9d_kUgkbYBfcHx82SP/exec?cpf=" + cpf;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        document.getElementById("resultado").innerText = "CPF não encontrado!";
+                    } else {
+                        document.getElementById("resultado").innerText = "Seu número sorteado é: " + data.numero;
+                    }
+                })
+                .catch(error => console.error("Erro ao buscar dados:", error));
+        }
+    </script>
+</body>
+</html>
