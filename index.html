@@ -53,6 +53,12 @@
             color: yellow;
             display: none;
         }
+        .loading {
+            font-size: 20px;
+            color: #ffd700;
+            margin-top: 20px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -62,27 +68,43 @@
     
     <div id="resultado"></div>
     <div id="sorteioAnimado">🎰 000 🎰</div>
+    <div class="loading" id="loading">🔄 Buscando informações...</div>
 
     <script>
         function buscarNumero() {
-            var cpf = document.getElementById("cpf").value;
+            var cpf = document.getElementById("cpf").value.trim();
             
-            // Remove pontos, traços e espaços extras
-            cpf = cpf.replace(/\D/g, "").trim();
+            // Remove pontos, traços e espaços extras do CPF
+            cpf = cpf.replace(/\D/g, "");
             
+            if (cpf.length !== 11) {
+                document.getElementById("resultado").innerText = "Por favor, insira um CPF válido (11 dígitos).";
+                return;
+            }
+
             var apiUrl = "https://script.google.com/macros/s/AKfycbxFv0akC8Sz2Z794mFaNFCnOd9-aRQLTBqOW08fQQkUkptSLT9d_kUgkbYBfcHx82SP?cpf=" + cpf;
+            
+            // Exibir mensagem de carregamento
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("resultado").innerText = "";
+            document.getElementById("sorteioAnimado").style.display = "none";
 
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
+                    document.getElementById("loading").style.display = "none";
+
                     if (data.erro) {
                         document.getElementById("resultado").innerText = "CPF não encontrado!";
-                        document.getElementById("sorteioAnimado").style.display = "none";
                     } else {
                         iniciarAnimacaoSorteio(data.numero);
                     }
                 })
-                .catch(error => console.error("Erro ao buscar dados:", error));
+                .catch(error => {
+                    console.error("Erro ao buscar dados:", error);
+                    document.getElementById("resultado").innerText = "Erro ao consultar. Tente novamente.";
+                    document.getElementById("loading").style.display = "none";
+                });
         }
 
         function iniciarAnimacaoSorteio(numeroFinal) {
