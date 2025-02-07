@@ -3,74 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta Sorteio</title>
+    <title>Consulta Sorteio | Fast Drywall & Steel Frame</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background: linear-gradient(135deg, #4a90e2, #1447b0);
-            color: white;
+        /* Reset */
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        h1 {
-            margin-top: 30px;
-            font-size: 28px;
-        }
-        input {
-            padding: 12px;
-            margin: 15px;
-            font-size: 18px;
-            border-radius: 5px;
-            border: none;
-            width: 250px;
+
+        /* Fundo com fogos de artifício */
+        body {
+            background: #fff;
+            color: white;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Canvas para os fogos de artifício */
+        #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Caixa principal */
+        .container {
+            background: #353535;
+            padding: 30px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+            width: 380px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            margin: 10px 0;
+            border: none;
+            outline: none;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        input::placeholder{
+            color: #ffffff40;
+            font-weight: 300;
+        }
+
         button {
-            padding: 12px 20px;
+            width: 100%;
+            padding: 14px;
             font-size: 18px;
             cursor: pointer;
             border: none;
-            background-color: #ffd700;
-            color: #000;
+            background-color: #a91918;
+            color: #fff;
             font-weight: bold;
-            border-radius: 5px;
-            transition: background 0.3s;
+            transition: 0.3s ease-in-out;
         }
+
         button:hover {
-            background-color: #ffc107;
+            background-color: #cf2828;
+            transform: scale(1.02);
         }
-        #resultado {
+
+        /* Número sorteado */
+        .sorteio-container {
+            margin-top: 20px;
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #d31515, #4B0000);
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        /* Loader */
+        #loading {
+            font-size: 16px;
+            color: #fff;
             margin-top: 30px;
-            font-size: 22px;
-            font-weight: bold;
-            min-height: 50px;
-        }
-        #sorteioAnimado {
-            font-size: 40px;
-            font-weight: bold;
-            margin-top: 20px;
-            color: yellow;
             display: none;
         }
-        .loading {
-            font-size: 20px;
-            color: #ffd700;
-            margin-top: 20px;
+
+        /* Animação de confete */
+        #lottie-animation {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
             display: none;
+        }
+
+        /* Animação de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <h1>Consulta de Número Sorteado</h1>
-    <input type="text" id="cpf" placeholder="Digite seu CPF" />
-    <button onclick="buscarNumero()">Consultar</button>
-    
-    <div id="resultado"></div>
-    <div id="sorteioAnimado">🎰 000 🎰</div>
-    <div class="loading" id="loading">🔄 Buscando informações...</div>
+
+    <!-- Canvas para fogos de artifício -->
+    <canvas id="fireworks-canvas"></canvas>
+
+    <div class="container">
+        <h1>Consulta de Sorteio</h1>
+        <input type="text" id="cpf" placeholder="Digite seu CPF" />
+        <button onclick="buscarNumero()">Consultar</button>
+
+        <div id="loading">Buscando informações...</div>
+        <div class="sorteio-container" id="sorteio-box">000</div>
+        <div id="lottie-animation"></div>
+    </div>
 
     <script>
+        // Inicializa a animação de fogos de artifício
+        particlesJS("fireworks-canvas", {
+            particles: {
+                number: { value: 50 },
+                shape: { type: "circle" },
+                opacity: { value: 0.8 },
+                size: { value: 3 },
+                move: { enable: true, speed: 4 }
+            }
+        });
+
+        // Inicia a animação Lottie
+        var animation = lottie.loadAnimation({
+            container: document.getElementById("lottie-animation"),
+            renderer: "svg",
+            loop: true,
+            autoplay: false,
+            path: "https://assets10.lottiefiles.com/packages/lf20_u4yrau.json" // Animação de confetes
+        });
+
         function buscarNumero() {
             var cpf = document.getElementById("cpf").value.trim();
             
@@ -78,16 +170,16 @@
             cpf = cpf.replace(/\D/g, "");
             
             if (cpf.length !== 11) {
-                document.getElementById("resultado").innerText = "Por favor, insira um CPF válido (11 dígitos).";
+                alert("Por favor, insira um CPF válido (11 dígitos).");
                 return;
             }
 
-            var apiUrl = "https://script.google.com/macros/s/AKfycbxFv0akC8Sz2Z794mFaNFCnOd9-aRQLTBqOW08fQQkUkptSLT9d_kUgkbYBfcHx82SP?cpf=" + cpf;
+            var apiUrl = "https://script.google.com/macros/s/AKfycbwrc4rrWUuNi0o1pK5PjVqhPNyUzIwfsLBkn1hVjMlIM_QDVckVWdbaEBfZqvL30YRU/exec?cpf=" + cpf;
             
-            // Exibir mensagem de carregamento
+            // Exibir carregamento
             document.getElementById("loading").style.display = "block";
-            document.getElementById("resultado").innerText = "";
-            document.getElementById("sorteioAnimado").style.display = "none";
+            document.getElementById("sorteio-box").style.display = "none";
+            document.getElementById("lottie-animation").style.display = "none";
 
             fetch(apiUrl)
                 .then(response => response.json())
@@ -95,37 +187,41 @@
                     document.getElementById("loading").style.display = "none";
 
                     if (data.erro) {
-                        document.getElementById("resultado").innerText = "CPF não encontrado!";
+                        alert("⚠️ " + data.erro);
                     } else {
-                        iniciarAnimacaoSorteio(data.numero);
+                        iniciarSorteio(data.numero);
                     }
                 })
                 .catch(error => {
                     console.error("Erro ao buscar dados:", error);
-                    document.getElementById("resultado").innerText = "Erro ao consultar. Tente novamente.";
+                    alert("❌ Erro ao consultar. Tente novamente.");
                     document.getElementById("loading").style.display = "none";
                 });
         }
 
-        function iniciarAnimacaoSorteio(numeroFinal) {
-            let sorteioAnimado = document.getElementById("sorteioAnimado");
-            let resultado = document.getElementById("resultado");
-            resultado.innerText = "Sorteando seu número...";
-            sorteioAnimado.style.display = "block";
+        function iniciarSorteio(numeroFinal) {
+            document.getElementById("sorteio-box").style.display = "block";
+            
+            let sorteioBox = document.getElementById("sorteio-box");
+            let tempo = 2500; // Tempo da animação (2,5s)
+            let intervalo = 50; // Intervalo de troca de número
 
-            let contador = 0;
-            let intervalo = setInterval(() => {
-                let numeroAleatorio = Math.floor(Math.random() * 1000) + 1;
-                sorteioAnimado.innerText = "🎰 " + numeroAleatorio + " 🎰";
-                contador++;
+            let numeros = setInterval(() => {
+                let randomNum = Math.floor(Math.random() * 1000);
+                sorteioBox.innerText = randomNum;
+            }, intervalo);
 
-                if (contador > 10) {
-                    clearInterval(intervalo);
-                    sorteioAnimado.innerText = "🎉 " + numeroFinal + " 🎉";
-                    resultado.innerText = "Seu número sorteado é:";
-                }
-            }, 150);
+            // Para a rolagem e exibe o número final
+            setTimeout(() => {
+                clearInterval(numeros);
+                sorteioBox.innerText = numeroFinal;
+
+                // Exibe animação de confetes 🎉
+                animation.play();
+                document.getElementById("lottie-animation").style.display = "block";
+            }, tempo);
         }
     </script>
+
 </body>
 </html>
